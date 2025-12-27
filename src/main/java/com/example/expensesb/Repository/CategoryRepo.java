@@ -1,13 +1,14 @@
 package com.example.expensesb.Repository;
 
+import com.example.expensesb.Entity.Category;
 import com.example.expensesb.Entity.MyUser;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.Optional;
+import java.util.List;
 
 @Repository
-public interface MyUserRepo extends JpaRepository<MyUser, Long> {
+public interface CategoryRepo extends JpaRepository<Category, Long>{
 
-    Optional<MyUser> findByUsername(String username);
+    List<Category> findByUser(MyUser user);
 }
