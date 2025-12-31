@@ -22,6 +22,7 @@ public class JwtService {
     private String secretKey;
 
     public String generateKey(String username){
+        System.out.println("Generating key for username: " + username);
 
         Map<String,Object> claims = new HashMap<>();
 
