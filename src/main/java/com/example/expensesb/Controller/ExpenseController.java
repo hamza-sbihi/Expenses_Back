@@ -41,6 +41,31 @@ public class ExpenseController {
         return ResponseEntity.noContent().build();
     }
 
+    @GetMapping("/total")
+    public ResponseEntity<Double> getTotalExpenses(){
+        return ResponseEntity.ok(expenseService.getTotal());
+    }
+
+    @GetMapping("/category/{id}")
+    public ResponseEntity<List<Expense>> getExpensesByCategory(@PathVariable Long id){
+        return ResponseEntity.ok(expenseService.getExpenseByCategory(id));
+    }
+
+    @GetMapping("/total/category/{id}")
+    public ResponseEntity<Double> getTotalExpensesByCategory(@PathVariable Long id){
+        return ResponseEntity.ok(expenseService.getTotalByCategory(id));
+    }
+
+    @GetMapping("/date")
+    public ResponseEntity<List<Expense>> getExpensesByMonth(@RequestParam int year, @RequestParam int month){
+        return ResponseEntity.ok(expenseService.getExpensesByTime(month,year));
+    }
+
+    @GetMapping("/total/date")
+    public ResponseEntity<Double> getTotalExpensesByMonth(@RequestParam int month, @RequestParam int year){
+        return ResponseEntity.ok(expenseService.getTotalExpensesByMonth(month,year));
+    }
+
 
 
 }

@@ -14,6 +14,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 
@@ -87,9 +88,75 @@ public class ExpenseService {
         expenseRepo.delete(expenseD);
     }
 
+    public Double getTotal() {
+        List<Expense> expenses = getAllExpenses();
+        Double total = 0.0;
+        for(Expense expense : expenses){
+            total += expense.getCost();
+        }
+        return total;
+    }
+
+    public Double getTotalByCategory(Long id) {
+        MyUser user = getUserFromContext();
+
+        //fetching the category from DB
+        Category category = categoryRepo.findById(id)
+                .orElseThrow(()->new EntityNotFoundException("Category not found while updating expense with id: " + id));
+
+        //checking if the category is actually by the user
+        if(!Objects.equals(category.getUser().getId(),user.getId())){
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+        }
+
+        List<Expense> expenses = expenseRepo.findByCategoryAndUser(user,category);
+
+        Double total = 0.0;
+        for(Expense expense : expenses){
+            total += expense.getCost();
+        }
+        return total;
+    }
+
+    public List<Expense> getExpenseByCategory(Long id) {
+        MyUser user = getUserFromContext();
+
+        //fetching the category from DB
+        Category category = categoryRepo.findById(id)
+                .orElseThrow(()->new EntityNotFoundException("Category not found while updating expense with id: " + id));
+
+        //checking if the category is actually by the user
+        if(!Objects.equals(category.getUser().getId(),user.getId())){
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+        }
+        return expenseRepo.findByCategoryAndUser(user,category);
+    }
+
+    public List<Expense> getExpensesByTime(int month, int year) {
+        MyUser user = getUserFromContext();
+        LocalDate start =  LocalDate.of(year, month, 1);
+        if(start.getMonthValue() == 12){
+            LocalDate end = LocalDate.of(year+1, 1, 1);
+        }
+        LocalDate end = start.plusMonths(1);
+        return expenseRepo.findbyUserAndMonth(user,start,end);
+    }
+
+    public Double getTotalExpensesByMonth(int month, int year) {
+        List<Expense> expenses = getExpensesByTime(month, year);
+        Double total = 0.0;
+        for(Expense expense : expenses){
+            total += expense.getCost();
+        }
+        return total;
+    }
+
     public MyUser getUserFromContext(){
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String username = auth.getName();
         return myUserRepo.findByUsername(username).orElseThrow(()->new EntityNotFoundException("User not found in Expense Service"));
     }
+
+
+
 }
