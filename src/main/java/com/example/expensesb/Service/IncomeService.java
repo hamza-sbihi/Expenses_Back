@@ -14,6 +14,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 
@@ -91,6 +92,64 @@ public class IncomeService {
 
     }
 
+    public Double getTotal() {
+        List<Income> incomes = getAllIncomes();
+
+        Double total = 0.0;
+        for(Income income : incomes){
+            total += income.getAmount();
+        }
+        return total;
+    }
+
+    public List<Income> getIncomeBySource(Long id) {
+
+        MyUser user = getMyUser();
+
+        IncomeSource incomeSourceDb = incomeSourceRepo.findById(id)
+                .orElseThrow(()-> new EntityNotFoundException("IncomeSource not found when getting income"));
+
+        if(!Objects.equals(incomeSourceDb.getUser().getId(),user.getId())){
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN,"Forbidden while getting income By source");
+        }
+
+        return incomeRepo.findByUserAndSource(user,incomeSourceDb);
+
+    }
+
+    public Double getTotalBySource(Long id) {
+
+        List<Income> incomes = getIncomeBySource(id);
+
+        Double total = 0.0;
+        for(Income income : incomes){
+            total += income.getAmount();
+
+        }
+        return total;
+    }
+
+    public List<Income> getIncomeByMonth(int year, int month) {
+
+        MyUser user = getMyUser();
+
+        LocalDate start = LocalDate.of(year,month,1);
+        LocalDate end = start.plusMonths(1);
+
+        return incomeRepo.findByUserAndMonth(user,start,end);
+    }
+
+    public Double getTotalByMonth(int year, int month) {
+
+        List<Income> incomes =  getIncomeByMonth(year,month);
+
+        Double total = 0.0;
+        for(Income income : incomes){
+            total += income.getAmount();
+        }
+        return total;
+    }
+
     public MyUser getMyUser() {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -99,6 +158,5 @@ public class IncomeService {
 
         return myUserRepo.findByUsername(username).orElseThrow(()->new EntityNotFoundException("user not found in Income service"));
     }
-
 
 }

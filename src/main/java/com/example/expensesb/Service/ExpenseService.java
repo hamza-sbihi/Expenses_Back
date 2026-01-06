@@ -132,7 +132,7 @@ public class ExpenseService {
         return expenseRepo.findByCategoryAndUser(user,category);
     }
 
-    public List<Expense> getExpensesByTime(int month, int year) {
+    public List<Expense> getExpensesByMonth(int month, int year) {
         MyUser user = getUserFromContext();
         LocalDate start =  LocalDate.of(year, month, 1);
         if(start.getMonthValue() == 12){
@@ -143,7 +143,7 @@ public class ExpenseService {
     }
 
     public Double getTotalExpensesByMonth(int month, int year) {
-        List<Expense> expenses = getExpensesByTime(month, year);
+        List<Expense> expenses = getExpensesByMonth(month, year);
         Double total = 0.0;
         for(Expense expense : expenses){
             total += expense.getCost();
