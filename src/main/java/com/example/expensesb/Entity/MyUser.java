@@ -35,4 +35,12 @@ public class MyUser {
     @JsonIgnore
     @OneToMany(mappedBy = "user",cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<Expense> expenses = new HashSet<>();
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Set<IncomeSource> incomeSources = new HashSet<>();
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Set<Income> incomes = new HashSet<>();
 }
