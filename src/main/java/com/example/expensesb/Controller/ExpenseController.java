@@ -58,7 +58,7 @@ public class ExpenseController {
 
     @GetMapping("/date")
     public ResponseEntity<List<Expense>> getExpensesByMonth(@RequestParam int year, @RequestParam int month){
-        return ResponseEntity.ok(expenseService.getExpensesByTime(month,year));
+        return ResponseEntity.ok(expenseService.getExpensesByMonth(month,year));
     }
 
     @GetMapping("/total/date")

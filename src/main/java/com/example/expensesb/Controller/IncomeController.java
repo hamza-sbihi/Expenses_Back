@@ -37,4 +37,29 @@ public class IncomeController {
         incomeService.delete(id);
         return ResponseEntity.noContent().build();
     }
+
+    @GetMapping("/total")
+    public ResponseEntity<Double> getTotalIncomes(){
+        return ResponseEntity.ok(incomeService.getTotal());
+    }
+
+    @GetMapping("/source/{id}")
+    public ResponseEntity<List<Income>> getIncomeBySource(@PathVariable Long id){
+        return ResponseEntity.ok(incomeService.getIncomeBySource(id));
+    }
+
+    @GetMapping("/total/source/{id}")
+    public ResponseEntity<Double> getTotalIncomesOfSource(@PathVariable Long id){
+        return ResponseEntity.ok(incomeService.getTotalBySource(id));
+    }
+
+    @GetMapping("/date")
+    public ResponseEntity<List<Income>> getIncomeByMonth(@RequestParam int year,@RequestParam int month){
+        return ResponseEntity.ok(incomeService.getIncomeByMonth(year,month));
+    }
+
+    @GetMapping("/total/date")
+    public ResponseEntity<Double> getTotalIncomesByMonth(@RequestParam int year,@RequestParam int month){
+        return ResponseEntity.ok(incomeService.getTotalByMonth(year,month));
+    }
 }
