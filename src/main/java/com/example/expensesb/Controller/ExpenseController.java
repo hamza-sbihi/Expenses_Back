@@ -1,7 +1,8 @@
 package com.example.expensesb.Controller;
 
 
-import com.example.expensesb.Entity.Expense;
+import com.example.expensesb.DTO.ExpenseReq;
+import com.example.expensesb.DTO.ExpenseRes;
 import com.example.expensesb.Service.ExpenseService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,18 +20,18 @@ public class ExpenseController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Expense>> getAllExpenses(){
+    public ResponseEntity<List<ExpenseRes>> getAllExpenses(){
         return ResponseEntity.ok(expenseService.getAllExpenses());
     }
 
     @PostMapping
-    public ResponseEntity<Expense> addExpense(@RequestBody Expense expense){
+    public ResponseEntity<ExpenseRes> addExpense(@RequestBody ExpenseReq expense){
         return ResponseEntity.ok(expenseService.create(expense));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Expense> updateExpense(@RequestBody Expense expense,@PathVariable Long id){
-        Expense savedExpense = expenseService.update(expense,id);
+    public ResponseEntity<ExpenseRes> updateExpense(@RequestBody ExpenseReq expense,@PathVariable Long id){
+        ExpenseRes savedExpense = expenseService.update(expense,id);
         return ResponseEntity.ok(savedExpense);
 
     }
@@ -47,7 +48,7 @@ public class ExpenseController {
     }
 
     @GetMapping("/category/{id}")
-    public ResponseEntity<List<Expense>> getExpensesByCategory(@PathVariable Long id){
+    public ResponseEntity<List<ExpenseRes>> getExpensesByCategory(@PathVariable Long id){
         return ResponseEntity.ok(expenseService.getExpenseByCategory(id));
     }
 
@@ -57,7 +58,7 @@ public class ExpenseController {
     }
 
     @GetMapping("/date")
-    public ResponseEntity<List<Expense>> getExpensesByMonth(@RequestParam int year, @RequestParam int month){
+    public ResponseEntity<List<ExpenseRes>> getExpensesByMonth(@RequestParam int year, @RequestParam int month){
         return ResponseEntity.ok(expenseService.getExpensesByMonth(month,year));
     }
 

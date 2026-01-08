@@ -1,5 +1,7 @@
 package com.example.expensesb.Service;
 
+import com.example.expensesb.DTO.IncomeSourceReq;
+import com.example.expensesb.DTO.IncomeSourceRes;
 import com.example.expensesb.Entity.IncomeSource;
 import com.example.expensesb.Entity.MyUser;
 import com.example.expensesb.Repository.IncomeSourceRepo;
@@ -12,6 +14,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -27,23 +30,39 @@ public class IncomeSourceService {
         this.myUserRepo = myUserRepo;
     }
 
-    public List<IncomeSource> getAll() {
-
-        MyUser user = getMyUser();
-        return incomeSourceRepo.findByUser(user);
-    }
-
-    public IncomeSource create(IncomeSource incomeSource) {
+    public List<IncomeSourceRes> getAll() {
 
         MyUser user = getMyUser();
 
-        incomeSource.setUser(user);
+        List<IncomeSource> incomeSources = incomeSourceRepo.findByUser(user);
 
-        return  incomeSourceRepo.save(incomeSource);
+        List<IncomeSourceRes> incomeSourcesRes = new ArrayList<>();
+
+        for (IncomeSource incomeSource : incomeSources) {
+            IncomeSourceRes incomeSourceRes = new IncomeSourceRes(incomeSource.getId(),incomeSource.getName());
+            incomeSourcesRes.add(incomeSourceRes);
+        }
+
+        return incomeSourcesRes;
+    }
+
+    public IncomeSourceRes create(IncomeSourceReq incomeSource) {
+
+        MyUser user = getMyUser();
+
+        IncomeSource incomeSourceEntity = new IncomeSource();
+
+        incomeSourceEntity.setUser(user);
+
+        incomeSourceEntity.setName(incomeSource.getName());
+
+        incomeSourceEntity = incomeSourceRepo.save(incomeSourceEntity);
+
+        return  new IncomeSourceRes(incomeSourceEntity.getId(),incomeSourceEntity.getName());
 
     }
 
-    public IncomeSource update(IncomeSource incomeSource, Long id) {
+    public IncomeSourceRes update(IncomeSourceReq incomeSource, Long id) {
 
         MyUser user = getMyUser();
 
@@ -56,7 +75,9 @@ public class IncomeSourceService {
 
         incomeSourceDb.setName(incomeSource.getName());
 
-        return incomeSourceRepo.save(incomeSourceDb);
+        incomeSourceDb =  incomeSourceRepo.save(incomeSourceDb);
+
+        return new IncomeSourceRes(incomeSourceDb.getId(),incomeSourceDb.getName());
 
     }
 

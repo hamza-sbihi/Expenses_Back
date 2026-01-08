@@ -1,5 +1,7 @@
 package com.example.expensesb.Service;
 
+import com.example.expensesb.DTO.ExpenseReq;
+import com.example.expensesb.DTO.ExpenseRes;
 import com.example.expensesb.Entity.Category;
 import com.example.expensesb.Entity.Expense;
 import com.example.expensesb.Entity.MyUser;
@@ -15,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -32,35 +35,55 @@ public class ExpenseService {
         this.categoryRepo = categoryRepo;
     }
 
-    public List<Expense> getAllExpenses(){
+    public List<ExpenseRes> getAllExpenses(){
 
         MyUser user = getUserFromContext();
 
-        return expenseRepo.findByUser(user);
+        List<Expense> expenses = expenseRepo.findByUser(user);
 
-    }
-    public Expense create(Expense expense){
-        MyUser user = getUserFromContext();
+        List<ExpenseRes> expensesRes = new ArrayList<>();
 
-        Category category = categoryRepo.findById(expense.getCategory().getId())
-                .orElseThrow(()->new EntityNotFoundException("Category not found creating expense"));
-        if(!Objects.equals(category.getUser().getId(), user.getId())){
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+        for (Expense expense : expenses) {
+            ExpenseRes expenseRes = new ExpenseRes();
+            createResFromDb(expenseRes, expense);
+            expensesRes.add(expenseRes);
         }
 
-        expense.setUser(user);
-        expense.setCategory(category);
 
-        return expenseRepo.save(expense);
+        return  expensesRes;
+
+    }
+    public ExpenseRes create(ExpenseReq expense){
+        MyUser user = getUserFromContext();
+
+        Category category = categoryRepo.findById(expense.getCategoryId())
+                .orElseThrow(()->new EntityNotFoundException("Category not found creating expense"));
+        if(!Objects.equals(category.getUser().getId(), user.getId())){
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN,"Forbidden while creating expense");
+        }
+        Expense newExpense = new Expense();
+        newExpense.setUser(user);
+        newExpense.setCategory(category);
+        newExpense.setCost(expense.getCost());
+        newExpense.setDate(expense.getDate());
+        newExpense.setDescription(expense.getDescription());
+
+        newExpense =  expenseRepo.save(newExpense);
+
+        ExpenseRes expenseRes = new ExpenseRes();
+
+        createResFromDb(expenseRes, newExpense);
+
+        return expenseRes;
     }
 
-    public Expense update(Expense expense, Long id) {
+    public ExpenseRes update(ExpenseReq expense, Long id) {
         Expense expenseD = expenseRepo.findById(id)
                 .orElseThrow(()->new EntityNotFoundException("Expense not found with id: " + id));
 
         MyUser user = getUserFromContext();
 
-        Category category = categoryRepo.findById(expense.getCategory().getId())
+        Category category = categoryRepo.findById(expense.getCategoryId())
                 .orElseThrow(()->new EntityNotFoundException("Category not found while updating expense with id: " + id));
 
 
@@ -72,8 +95,13 @@ public class ExpenseService {
         expenseD.setDescription(expense.getDescription());
         expenseD.setDate(expense.getDate());
         expenseD.setCost(expense.getCost());
+        expenseD = expenseRepo.save(expenseD);
 
-        return expenseRepo.save(expenseD);
+        ExpenseRes expenseRes = new ExpenseRes();
+
+        createResFromDb(expenseRes, expenseD);
+
+        return expenseRes;
     }
 
     public void delete(Long id) {
@@ -89,9 +117,9 @@ public class ExpenseService {
     }
 
     public Double getTotal() {
-        List<Expense> expenses = getAllExpenses();
+        List<ExpenseRes> expenses = getAllExpenses();
         Double total = 0.0;
-        for(Expense expense : expenses){
+        for(ExpenseRes expense : expenses){
             total += expense.getCost();
         }
         return total;
@@ -118,7 +146,7 @@ public class ExpenseService {
         return total;
     }
 
-    public List<Expense> getExpenseByCategory(Long id) {
+    public List<ExpenseRes> getExpenseByCategory(Long id) {
         MyUser user = getUserFromContext();
 
         //fetching the category from DB
@@ -129,21 +157,46 @@ public class ExpenseService {
         if(!Objects.equals(category.getUser().getId(),user.getId())){
             throw new ResponseStatusException(HttpStatus.FORBIDDEN);
         }
-        return expenseRepo.findByCategoryAndUser(user,category);
+
+        List<Expense> expenses = expenseRepo.findByCategoryAndUser(user,category);
+
+        List<ExpenseRes> expenseRes = new ArrayList<>();
+
+        for(Expense expense : expenses){
+            ExpenseRes expenseRes1 = new ExpenseRes();
+            createResFromDb(expenseRes1, expense);
+            expenseRes.add(expenseRes1);
+        }
+
+        return expenseRes;
     }
 
-    public List<Expense> getExpensesByMonth(int month, int year) {
+    public List<ExpenseRes> getExpensesByMonth(int month, int year) {
         MyUser user = getUserFromContext();
         LocalDate start =  LocalDate.of(year, month, 1);
-        if(start.getMonthValue() == 12){
-            LocalDate end = LocalDate.of(year+1, 1, 1);
-        }
+
         LocalDate end = start.plusMonths(1);
-        return expenseRepo.findbyUserAndMonth(user,start,end);
+
+        List<Expense> expenses = expenseRepo.findbyUserAndMonth(user,start,end);
+
+        List<ExpenseRes> expenseRes = new ArrayList<>();
+
+        for(Expense expense : expenses){
+            ExpenseRes expenseRes1 = new ExpenseRes();
+            createResFromDb(expenseRes1, expense);
+            expenseRes.add(expenseRes1);
+        }
+
+        return expenseRes;
     }
 
     public Double getTotalExpensesByMonth(int month, int year) {
-        List<Expense> expenses = getExpensesByMonth(month, year);
+        MyUser user = getUserFromContext();
+        LocalDate start =  LocalDate.of(year, month, 1);
+
+        LocalDate end = start.plusMonths(1);
+
+        List<Expense> expenses = expenseRepo.findbyUserAndMonth(user,start,end);
         Double total = 0.0;
         for(Expense expense : expenses){
             total += expense.getCost();
@@ -155,6 +208,18 @@ public class ExpenseService {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String username = auth.getName();
         return myUserRepo.findByUsername(username).orElseThrow(()->new EntityNotFoundException("User not found in Expense Service"));
+    }
+
+    public void createResFromDb(ExpenseRes expenseRes,Expense expense){
+
+        expenseRes.setId(expense.getId());
+        expenseRes.setCategoryId(expense.getCategory().getId());
+        expenseRes.setCategoryName(expense.getCategory().getName());
+        expenseRes.setCost(expense.getCost());
+        expenseRes.setDate(expense.getDate());
+        expenseRes.setDescription(expense.getDescription());
+
+
     }
 
 

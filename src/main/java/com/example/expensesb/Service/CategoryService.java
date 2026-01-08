@@ -1,5 +1,7 @@
 package com.example.expensesb.Service;
 
+import com.example.expensesb.DTO.CategoryReq;
+import com.example.expensesb.DTO.CategoryRes;
 import com.example.expensesb.Entity.Category;
 import com.example.expensesb.Entity.MyUser;
 import com.example.expensesb.Repository.CategoryRepo;
@@ -12,6 +14,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -27,24 +30,37 @@ public class CategoryService {
         this.myUserRepo = myUserRepo;
     }
 
-    public List<Category> getAllCategories() {
+    public List<CategoryRes> getAllCategories() {
 
         MyUser user = getMyUser();
 
-        return categoryRepo.findByUser(user);
+        List<Category> categories = categoryRepo.findByUser(user);
+        List<CategoryRes> categoriesRes = new ArrayList<>();
+        for (Category category : categories) {
+            CategoryRes categoryRes = new CategoryRes(category.getId(),category.getName());
+            categoriesRes.add(categoryRes);
+        }
+
+        return categoriesRes;
     }
 
-    public Category create(Category category) {
+    public CategoryRes create(CategoryReq category) {
 
         MyUser user = getMyUser();
 
-        category.setUser(user);
+        Category categoryEntity = new Category();
 
-        return  categoryRepo.save(category);
+        categoryEntity.setName(category.getName());
+
+        categoryEntity.setUser(user);
+
+        categoryRepo.save(categoryEntity);
+
+        return  new CategoryRes(categoryEntity.getId(),categoryEntity.getName());
 
     }
 
-    public Category update(Category category, Long id) {
+    public CategoryRes update(CategoryReq category, Long id) {
 
         MyUser user = getMyUser();
 
@@ -56,9 +72,10 @@ public class CategoryService {
         }
 
         categoryDb.setName(category.getName());
+        categoryRepo.save(categoryDb);
 
 
-        return  categoryRepo.save(categoryDb);
+        return new CategoryRes(categoryDb.getId(),categoryDb.getName());
 
     }
 
