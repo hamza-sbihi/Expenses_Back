@@ -1,7 +1,5 @@
 package com.example.expensesb.Entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -15,7 +13,6 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @Getter
 @Setter
-@JsonIgnoreProperties({"hibernateLazyInitializer","handler"})
 public class Income {
 
     @Id
@@ -32,7 +29,6 @@ public class Income {
     @JoinColumn(name="incomeSource_id", nullable=false)
     private IncomeSource incomeSource;
 
-    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="user_id", nullable=false)
     private MyUser user;

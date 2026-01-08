@@ -1,5 +1,7 @@
 package com.example.expensesb.Controller;
 
+import com.example.expensesb.DTO.IncomeReq;
+import com.example.expensesb.DTO.IncomeRes;
 import com.example.expensesb.Entity.Income;
 import com.example.expensesb.Service.IncomeService;
 import org.springframework.http.ResponseEntity;
@@ -18,17 +20,17 @@ public class IncomeController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Income>> getIncome() {
+    public ResponseEntity<List<IncomeRes>> getIncome() {
         return ResponseEntity.ok(incomeService.getAllIncomes());
     }
 
     @PostMapping
-    public ResponseEntity<Income> createIncome(@RequestBody Income income) {
+    public ResponseEntity<IncomeRes> createIncome(@RequestBody IncomeReq income) {
         return ResponseEntity.ok(incomeService.createIncome(income));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Income>  updateIncome(@PathVariable Long id, @RequestBody Income income) {
+    public ResponseEntity<IncomeRes>  updateIncome(@PathVariable Long id, @RequestBody IncomeReq income) {
         return ResponseEntity.ok(incomeService.updateIncome(id,income));
     }
 
@@ -44,7 +46,7 @@ public class IncomeController {
     }
 
     @GetMapping("/source/{id}")
-    public ResponseEntity<List<Income>> getIncomeBySource(@PathVariable Long id){
+    public ResponseEntity<List<IncomeRes>> getIncomeBySource(@PathVariable Long id){
         return ResponseEntity.ok(incomeService.getIncomeBySource(id));
     }
 
@@ -54,7 +56,7 @@ public class IncomeController {
     }
 
     @GetMapping("/date")
-    public ResponseEntity<List<Income>> getIncomeByMonth(@RequestParam int year,@RequestParam int month){
+    public ResponseEntity<List<IncomeRes>> getIncomeByMonth(@RequestParam int year,@RequestParam int month){
         return ResponseEntity.ok(incomeService.getIncomeByMonth(year,month));
     }
 

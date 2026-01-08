@@ -1,5 +1,7 @@
 package com.example.expensesb.Controller;
 
+import com.example.expensesb.DTO.IncomeSourceReq;
+import com.example.expensesb.DTO.IncomeSourceRes;
 import com.example.expensesb.Entity.IncomeSource;
 import com.example.expensesb.Service.IncomeSourceService;
 import org.springframework.http.ResponseEntity;
@@ -18,17 +20,17 @@ public class IncomeSourceController {
     }
 
     @GetMapping
-    public ResponseEntity<List<IncomeSource>> getAllIncomes() {
+    public ResponseEntity<List<IncomeSourceRes>> getAllIncomes() {
         return ResponseEntity.ok(incomeSourceService.getAll());
     }
 
     @PostMapping
-    public ResponseEntity<IncomeSource> create(@RequestBody IncomeSource incomeSource) {
+    public ResponseEntity<IncomeSourceRes> create(@RequestBody IncomeSourceReq incomeSource) {
         return ResponseEntity.ok(incomeSourceService.create(incomeSource));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<IncomeSource> update(IncomeSource incomeSource, @PathVariable Long id) {
+    public ResponseEntity<IncomeSourceRes> update(IncomeSourceReq incomeSource, @PathVariable Long id) {
         return ResponseEntity.ok(incomeSourceService.update(incomeSource,id));
     }
 
