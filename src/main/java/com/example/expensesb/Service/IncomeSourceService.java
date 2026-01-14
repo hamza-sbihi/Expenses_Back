@@ -72,7 +72,7 @@ public class IncomeSourceService {
         if(!Objects.equals(incomeSourceDb.getUser().getId(), user.getId())){
             throw new ResponseStatusException(HttpStatus.FORBIDDEN,"Forbidden while updating IncomeSource object");
         }
-
+        System.out.println("printing request name " + incomeSource.getName());
         incomeSourceDb.setName(incomeSource.getName());
 
         incomeSourceDb =  incomeSourceRepo.save(incomeSourceDb);

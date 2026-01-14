@@ -2,7 +2,6 @@ package com.example.expensesb.Controller;
 
 import com.example.expensesb.DTO.IncomeReq;
 import com.example.expensesb.DTO.IncomeRes;
-import com.example.expensesb.Entity.Income;
 import com.example.expensesb.Service.IncomeService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -58,6 +57,16 @@ public class IncomeController {
     @GetMapping("/date")
     public ResponseEntity<List<IncomeRes>> getIncomeByMonth(@RequestParam int year,@RequestParam int month){
         return ResponseEntity.ok(incomeService.getIncomeByMonth(year,month));
+    }
+
+    @GetMapping("date/year")
+    public ResponseEntity<List<IncomeRes>> getIncomeByYear(@RequestParam int year){
+        return ResponseEntity.ok(incomeService.getIncomeByYear(year));
+    }
+
+    @GetMapping("total/date/year")
+    public ResponseEntity<Double> getTotalIncomesOfYear(@RequestParam int year){
+        return ResponseEntity.ok(incomeService.getTotalIncomeByYear(year));
     }
 
     @GetMapping("/total/date")

@@ -30,7 +30,7 @@ public class IncomeSourceController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<IncomeSourceRes> update(IncomeSourceReq incomeSource, @PathVariable Long id) {
+    public ResponseEntity<IncomeSourceRes> update(@RequestBody IncomeSourceReq incomeSource, @PathVariable Long id) {
         return ResponseEntity.ok(incomeSourceService.update(incomeSource,id));
     }
 

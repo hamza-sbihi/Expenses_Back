@@ -62,6 +62,16 @@ public class ExpenseController {
         return ResponseEntity.ok(expenseService.getExpensesByMonth(month,year));
     }
 
+    @GetMapping("/date/year")
+    public ResponseEntity<List<ExpenseRes>> getExpensesByYear(@RequestParam int year){
+        return ResponseEntity.ok(expenseService.getExpensesByYear(year));
+    }
+
+    @GetMapping("total/date/year")
+    public ResponseEntity<Double> getTotalExpensesByYear(@RequestParam int year){
+        return ResponseEntity.ok(expenseService.getTotalExpensesByYear(year));
+    }
+
     @GetMapping("/total/date")
     public ResponseEntity<Double> getTotalExpensesByMonth(@RequestParam int month, @RequestParam int year){
         return ResponseEntity.ok(expenseService.getTotalExpensesByMonth(month,year));
