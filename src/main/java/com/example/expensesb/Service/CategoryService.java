@@ -1,7 +1,7 @@
 package com.example.expensesb.Service;
 
-import com.example.expensesb.DTO.CategoryReq;
-import com.example.expensesb.DTO.CategoryRes;
+import com.example.expensesb.DTO.Category.CategoryReq;
+import com.example.expensesb.DTO.Category.CategoryRes;
 import com.example.expensesb.Entity.Category;
 import com.example.expensesb.Entity.MyUser;
 import com.example.expensesb.Repository.CategoryRepo;

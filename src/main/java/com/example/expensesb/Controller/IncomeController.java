@@ -1,7 +1,7 @@
 package com.example.expensesb.Controller;
 
-import com.example.expensesb.DTO.IncomeReq;
-import com.example.expensesb.DTO.IncomeRes;
+import com.example.expensesb.DTO.Income.IncomeReq;
+import com.example.expensesb.DTO.Income.IncomeRes;
 import com.example.expensesb.Service.IncomeService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

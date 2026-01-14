@@ -1,7 +1,7 @@
 package com.example.expensesb.Controller;
 
-import com.example.expensesb.DTO.CategoryReq;
-import com.example.expensesb.DTO.CategoryRes;
+import com.example.expensesb.DTO.Category.CategoryReq;
+import com.example.expensesb.DTO.Category.CategoryRes;
 import com.example.expensesb.Service.CategoryService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

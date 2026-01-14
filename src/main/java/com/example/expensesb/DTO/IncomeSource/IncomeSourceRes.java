@@ -1,5 +1,4 @@
-package com.example.expensesb.DTO;
-
+package com.example.expensesb.DTO.IncomeSource;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -10,10 +9,9 @@ import lombok.Setter;
 @NoArgsConstructor
 @Getter
 @Setter
-public class CategoryRes {
+public class IncomeSourceRes {
 
     private Long id;
 
     private String name;
-
 }
