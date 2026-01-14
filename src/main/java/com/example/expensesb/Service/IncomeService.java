@@ -226,6 +226,36 @@ public class IncomeService {
 
         return myUserRepo.findByUsername(username).orElseThrow(()->new EntityNotFoundException("user not found in Income service"));
     }
+    public List<IncomeRes> getIncomeByYear(int year) {
+        MyUser user = getMyUser();
+        LocalDate start = LocalDate.of(year,1,1);
+        LocalDate end = start.plusYears(1);
+
+        List<Income> incomes = incomeRepo.findByUserAndMonth(user,start,end);
+
+        List<IncomeRes> incomesRes = new ArrayList<>();
+        for(Income income : incomes){
+            IncomeRes incomeRes = new IncomeRes();
+            toDTO(income,incomeRes);
+            incomesRes.add(incomeRes);
+        }
+
+        return incomesRes;
+    }
+
+    public Double getTotalIncomeByYear(int year) {
+        MyUser user = getMyUser();
+        LocalDate start = LocalDate.of(year,1,1);
+        LocalDate end = start.plusYears(1);
+
+        List<Income> incomes = incomeRepo.findByUserAndMonth(user,start,end);
+        Double total = 0.0;
+        for(Income income : incomes){
+            total += income.getAmount();
+
+        }
+        return total;
+    }
 
     public void toDTO(Income income,IncomeRes incomeRes){
         incomeRes.setId(income.getId());
@@ -235,5 +265,7 @@ public class IncomeService {
         incomeRes.setDate(income.getDate());
         incomeRes.setIncomeSourceName(income.getIncomeSource().getName());
     }
+
+
 
 }

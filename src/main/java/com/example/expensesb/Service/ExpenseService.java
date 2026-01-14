@@ -204,6 +204,42 @@ public class ExpenseService {
         return total;
     }
 
+    public List<ExpenseRes> getExpensesByYear(int year) {
+
+        MyUser user = getUserFromContext();
+
+        LocalDate start = LocalDate.of(year, 1, 1);
+        LocalDate end = start.plusYears(1);
+
+        List<Expense> expenses = expenseRepo.findbyUserAndMonth(user,start,end);
+
+        List<ExpenseRes> expenseRes = new ArrayList<>();
+
+        for(Expense expense : expenses){
+            ExpenseRes expenseRes1 = new ExpenseRes();
+            createResFromDb(expenseRes1, expense);
+            expenseRes.add(expenseRes1);
+        }
+
+        return expenseRes;
+    }
+
+    public Double getTotalExpensesByYear(int year) {
+        MyUser user = getUserFromContext();
+
+        LocalDate start = LocalDate.of(year, 1, 1);
+        LocalDate end = start.plusYears(1);
+
+        List<Expense> expenses = expenseRepo.findbyUserAndMonth(user,start,end);
+
+        Double total = 0.0;
+        for(Expense expense : expenses){
+            total += expense.getCost();
+        }
+
+        return total;
+    }
+
     public MyUser getUserFromContext(){
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String username = auth.getName();
