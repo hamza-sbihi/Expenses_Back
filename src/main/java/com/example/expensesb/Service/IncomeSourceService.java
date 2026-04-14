@@ -1,7 +1,7 @@
 package com.example.expensesb.Service;
 
-import com.example.expensesb.DTO.IncomeSourceReq;
-import com.example.expensesb.DTO.IncomeSourceRes;
+import com.example.expensesb.DTO.IncomeSource.IncomeSourceReq;
+import com.example.expensesb.DTO.IncomeSource.IncomeSourceRes;
 import com.example.expensesb.Entity.IncomeSource;
 import com.example.expensesb.Entity.MyUser;
 import com.example.expensesb.Repository.IncomeSourceRepo;

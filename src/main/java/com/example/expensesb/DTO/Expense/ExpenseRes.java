@@ -1,4 +1,4 @@
-package com.example.expensesb.DTO;
+package com.example.expensesb.DTO.Expense;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

@@ -1,5 +1,6 @@
 package com.example.expensesb.Repository;
 
+import com.example.expensesb.DTO.Stats.DonutChartRes;
 import com.example.expensesb.Entity.Income;
 import com.example.expensesb.Entity.IncomeSource;
 import com.example.expensesb.Entity.MyUser;
@@ -21,4 +22,12 @@ public interface IncomeRepo extends JpaRepository<Income, Long> {
 
     @Query("SELECT i FROM Income i WHERE i.user = :user AND i.date >= :start AND i.date < :end")
     List<Income> findByUserAndMonth(@Param("user") MyUser user, @Param("start") LocalDate start, @Param("end") LocalDate end);
+
+    @Query("SELECT  NEW com.example.expensesb.DTO.Stats.DonutChartRes(i.incomeSource.name,SUM(i.amount)) "+
+            "FROM Income i " +
+            " WHERE i.user = :user AND i.date >= :start AND i.date < :end " +
+            " GROUP BY i.incomeSource")
+    List<DonutChartRes> findByDonutChartData(@Param("user")MyUser user,
+                                             @Param("start") LocalDate start,
+                                             @Param("end") LocalDate end);
 }

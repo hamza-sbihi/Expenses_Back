@@ -1,8 +1,8 @@
 package com.example.expensesb.Controller;
 
 
-import com.example.expensesb.DTO.ExpenseReq;
-import com.example.expensesb.DTO.ExpenseRes;
+import com.example.expensesb.DTO.Expense.ExpenseReq;
+import com.example.expensesb.DTO.Expense.ExpenseRes;
 import com.example.expensesb.Service.ExpenseService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

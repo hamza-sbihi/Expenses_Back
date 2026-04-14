@@ -1,4 +1,4 @@
-package com.example.expensesb.DTO;
+package com.example.expensesb.DTO.Income;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -11,9 +11,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @Getter
 @Setter
-public class IncomeRes {
-
-    private Long id;
+public class IncomeReq {
 
     private String description;
 
@@ -23,5 +21,4 @@ public class IncomeRes {
 
     private Long incomeSourceId;
 
-    private String incomeSourceName;
 }
