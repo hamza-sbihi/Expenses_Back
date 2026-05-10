@@ -95,6 +95,19 @@ public class IncomeSourceService {
         incomeSourceRepo.delete(incomeSourceDb);
     }
 
+    public IncomeSourceRes getById(Long id) {
+        MyUser user = getMyUser();
+
+        IncomeSource incomeSourceDb = incomeSourceRepo.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("IncomeSource not found with id: " + id));
+
+        if(!Objects.equals(incomeSourceDb.getUser().getId(), user.getId())){
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN,"Forbidden while updating IncomeSource object");
+        }
+
+        return new IncomeSourceRes(incomeSourceDb.getId(),incomeSourceDb.getName());
+    }
+
     public MyUser getMyUser(){
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -103,6 +116,7 @@ public class IncomeSourceService {
 
         return myUserRepo.findByUsername(username).orElseThrow(()->new EntityNotFoundException("User not found in income source service"));
     }
+
 
 
 }

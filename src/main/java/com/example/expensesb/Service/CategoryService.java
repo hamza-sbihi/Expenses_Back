@@ -94,6 +94,19 @@ public class CategoryService {
 
     }
 
+    public CategoryRes getCategoryById(Long id) {
+        MyUser user = getMyUser();
+
+        Category categoryDb = categoryRepo.findById(id)
+                .orElseThrow(()->new EntityNotFoundException("Category not found"));
+
+        if(!Objects.equals(categoryDb.getUser().getId(), user.getId())){
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+        }
+
+        return new CategoryRes(categoryDb.getId(),categoryDb.getName());
+    }
+
     public MyUser getMyUser() {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

@@ -24,6 +24,11 @@ public class IncomeSourceController {
         return ResponseEntity.ok(incomeSourceService.getAll());
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<IncomeSourceRes> getIncome(@PathVariable Long id){
+        return ResponseEntity.ok(incomeSourceService.getById(id));
+    }
+
     @PostMapping
     public ResponseEntity<IncomeSourceRes> create(@RequestBody IncomeSourceReq incomeSource) {
         return ResponseEntity.ok(incomeSourceService.create(incomeSource));
